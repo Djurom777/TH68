@@ -1,7 +1,7 @@
 {
   "images" : [
     {
-      "filename" : "Appicon-4.jpg",
+      "filename" : "Appicon-7.jpg",
       "idiom" : "universal",
       "platform" : "ios",
       "size" : "1024x1024"
@@ -13,7 +13,7 @@
           "value" : "dark"
         }
       ],
-      "filename" : "Appicon-4 1.jpg",
+      "filename" : "Appicon-7 1.jpg",
       "idiom" : "universal",
       "platform" : "ios",
       "size" : "1024x1024"
@@ -25,7 +25,7 @@
           "value" : "tinted"
         }
       ],
-      "filename" : "Appicon-4 2.jpg",
+      "filename" : "Appicon-7 2.jpg",
       "idiom" : "universal",
       "platform" : "ios",
       "size" : "1024x1024"
